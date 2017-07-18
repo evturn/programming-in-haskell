@@ -6,3 +6,7 @@ sumOfHundredSquareIntegers = sum [x^2 | x <- [1..100]]
 -- 2.
 grid :: Int -> Int -> [(Int, Int)]
 grid m n = [(x, y) | x <- [0..m], y <- [0..n]]
+
+-- 3.
+replicate' :: Int -> a -> [a]
+replicate' n x = [x | _ <- [0..n]]
