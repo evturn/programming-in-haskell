@@ -14,3 +14,10 @@ square' n = [(x, y) | (x, y) <- grid n n, x /= y]
 -- 4.
 replicate' :: Int -> a -> [a]
 replicate' n x = [x | _ <- [0..n]]
+
+-- 5.
+pyths :: Int -> [(Int, Int ,Int)]
+pyths n = [(x, y, z) | x <- [1..n],
+                       y <- [1..n],
+                       z <- [1..n],
+                       (x^2) + (y^2) == (z^2)]
