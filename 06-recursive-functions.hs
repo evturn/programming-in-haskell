@@ -13,4 +13,4 @@ sumdown n | n > 0 = n + sumdown (n - 1)
 -- 3.
 (^) :: Int -> Int -> Int
 (^) 0 = 1
-(^) m ^ n = m + (exponent m ^ (n - 1))
+(^) m ^ n = m + (m ^ (n - 1))
