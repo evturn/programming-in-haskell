@@ -49,3 +49,13 @@ palindrome xs = reverse xs == xs
 
 twice :: (a -> a) -> a -> a
 twice f x = f (f x)
+
+-- 4.
+-- 👌
+
+-- 5.
+-- Why is it not feasible in general for function types to be instances of the Eq class?
+-- It is not feasible in general to compare two functions for equality.
+
+-- When is it feasible?
+-- It is feasible for all basic types which are instances of the Eq class.
