@@ -1,4 +1,4 @@
-import Prelude hiding (all, any, takeWhile)
+import Prelude hiding (all, any, takeWhile, dropWhile)
 -- 1.
 -- Show how the list comprehension [f x | x <- xs, p x] can be re-expressed using the higher-order functions map and filter.
 
@@ -24,3 +24,12 @@ takeWhile f [] = []
 takeWhile f (x:xs)
   | f x       = x : takeWhile f xs
   | otherwise = []
+
+-- d.
+-- Remove elements from a list wile they satisfy a predicate:
+dropWhile :: (a -> Bool) -> [a] -> [a]
+dropWhile f [] = []
+dropWhile f (x:xs)
+  | f x       = dropWhile f xs
+  | otherwise = x : xs
+
