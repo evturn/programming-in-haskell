@@ -1,4 +1,4 @@
-import Prelude hiding (all, any, takeWhile, dropWhile)
+import Prelude hiding (all, any, takeWhile, dropWhile, map, filter)
 -- 1.
 -- Show how the list comprehension [f x | x <- xs, p x] can be re-expressed using the higher-order functions map and filter.
 
@@ -33,3 +33,9 @@ dropWhile f (x:xs)
   | f x       = dropWhile f xs
   | otherwise = x : xs
 
+-- 3.
+-- Redefine the functions map f and filter p using foldr.
+map f = foldr (\x y -> f x : y) []
+
+filter :: (a -> Bool) -> [a] -> [a]
+filter p = foldr (\x y -> if p x then x : y else y) [] 
