@@ -46,3 +46,10 @@ filter p = foldr (\x y -> if p x then x : y else y) []
 --
 dec2int :: [Int] -> Int
 dec2int = foldl (\ys x -> ys * 10 + x) 0 
+
+-- 5. Define the higher-order library function curry that converts a function on pairs into a curried function, and, conversely, the function uncurry that converts a curried function with two arguments into a function on pairs.
+currry :: ((a, b) -> c) -> (a -> b -> c)
+currry f = \x y -> f (x, y)
+
+uncurrry :: (a -> b -> c) -> ((a, b) -> c)
+uncurrry f = \(x, y) -> f x y
