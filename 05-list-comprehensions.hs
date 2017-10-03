@@ -28,3 +28,8 @@ factors n = [x | x <- [1..n], n `mod` x == 0]
 
 perfects :: Int -> [Int]
 perfects n = [sum (factors x) | x <- [1..n]]
+
+-- 7.
+nestedComp xss yss = [[(x,y)] | xs <- xss, x <- xs, ys <- yss, y <- ys]
+
+
