@@ -14,3 +14,10 @@ instance Monoid b => Monoid (a -> b) where
 instance Traversable Maybe where
   foldr _ _ Nothing = Nothing
   foldr f x (Just y) = Just (f (x `mappend` y))
+
+-- 4.
+data Tree a =
+    Leaf
+  | Node (Tree a) a (Tree a)
+  deriving (Eq, Show)
+
