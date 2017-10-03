@@ -2,13 +2,14 @@
 
 import Prelude hiding (all, any, takeWhile, dropWhile, map, filter, iterate)
 -- 1.
--- Show how the list comprehension [f x | x <- xs, p x] can be re-expressed using the higher-order functions map and filter.
-
+-- Show how the list comprehension [f x | x <- xs, p x] can be re-expressed using the higher-order
+-- functions map and filter.
 f1 :: (a -> Bool) -> (a -> b) -> [a] -> [b]
 f1 p f xs = map f $ filter p xs
 
 -- 2.
--- Without looking at the definitions from the standard prelude, define the following higher-order library functions on lists.
+-- Without looking at the definitions from the standard prelude, define the following higher-order
+-- library functions on lists.
 -- a.
 -- Decide if all elements of a list satisfy a predicate:
 all :: (Int -> Bool) -> [Int] -> Bool
@@ -42,15 +43,19 @@ map f = foldr (\x y -> f x : y) []
 filter :: (a -> Bool) -> [a] -> [a]
 filter p = foldr (\x y -> if p x then x : y else y) [] 
 
--- 4. Using foldl, define a function dec2int :: [Int] -> Int that converts a decimal number into an integer. For example:
+-- 4. Using foldl, define a function dec2int :: [Int] -> Int that converts a decimal number into an
+--    integer. For example:
 -- dec2int [2,3,4,5]
 -- 2345
 --
 dec2int :: [Int] -> Int
 dec2int = foldl (\ys x -> ys * 10 + x) 0 
 
--- 5. Define the higher-order library function curry that converts a function on pairs into a curried function, and, conversely, the function uncurry that converts a curried function with two arguments into a function on pairs.
-currry :: ((a, b) -> c) -> (a -> b -> c)
+-- 5. Define the higher-order library function curry that converts a function on pairs into a
+--    curried function, and, conversely, the function uncurry that converts a curried function
+--    with two arguments into a function on pairs.
+
+--    currry :: ((a, b) -> c) -> (a -> b -> c)
 currry f = \x y -> f (x, y)
 
 uncurrry :: (a -> b -> c) -> ((a, b) -> c)

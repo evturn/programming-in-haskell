@@ -30,6 +30,19 @@ perfects :: Int -> [Int]
 perfects n = [sum (factors x) | x <- [1..n]]
 
 -- 7.
-nestedComp xss yss = [[(x,y)] | xs <- xss, x <- xs, ys <- yss, y <- ys]
+-- Show how the list comprehension [(x, y) | x <- [1, 2], y <- [3, 4]] with two generators can be
+-- expressed using two comprehensions with a single generator
 
+nestedComprehension xs ys = concat [[(x, y) | x <- xs] | y <- ys]
 
+-- 8.
+-- Redefine the function `positions` using the function `find`
+
+positions :: Eq a => a -> [a] -> [Int]
+positions x xs = [i | (x', i) <- zip xs [0..], x == x']
+
+find :: Eq a => a -> [(a, b)] -> [b]
+find k t = [v | (k', v) <- t, k == k']
+
+findPositions :: Eq a => a -> [a] -> [Int]
+findPositions x xs = find x (zip xs [0..])
