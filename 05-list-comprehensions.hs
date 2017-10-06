@@ -46,3 +46,10 @@ find k t = [v | (k', v) <- t, k == k']
 
 findPositions :: Eq a => a -> [a] -> [Int]
 findPositions x xs = find x (zip xs [0..])
+
+-- 9.
+-- The scalar product of two lists of integers `xs` and `ys` of length `n` is given
+-- by the sum of the products of cooresponding integers.
+
+scalarproduct :: [Int] -> [Int] -> Int
+scalarproduct xs ys = sum [x * y | (x, y) <- zip xs ys]
