@@ -1,14 +1,20 @@
 -- Exercises 6.8
 
 -- 1.
+-- Modify the factorial function to prohibit negative arguments by adding a guard 
+-- to the recursive case.
 factorial :: Int -> Int
-factorial 0         = 1
-factorial n | n > 0 = n * factorial (n - 1)
+factorial n
+  | n < 0  = 0
+  | n == 0 = 1
+  | n > 0  = n * factorial (n - 1)
 
 -- 2.
+-- Define a recursive function that returns the sum of non-negative numbers from a
+-- given value down to zero.
 sumdown :: Int -> Int
-sumdown 0         = 0
-sumdown n | n > 0 = n + sumdown (n - 1)
+sumdown 0 = 0
+sumdown n = n + sumdown (n - 1)
 
 -- 3.
 -- Define the exponentiation operator `^` for non-negative integers using the same
