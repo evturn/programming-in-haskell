@@ -61,3 +61,36 @@ init' (x:xs) = x : init' xs
 -- 1 : 2 : init' [3]
 -- 1 : 2 : []
 -- [1,2]
+
+-- 6.
+-- Define the following library functions on lists using recursion.
+-- a.
+and' :: [Bool] -> Bool
+and' [] = True
+and' (x:xs) = 
+  if x == False
+     then False 
+  else and' xs 
+
+-- b.
+concat' :: [[a]] -> [a]
+concat' []       = []
+concat' (xs:xss) = xs ++ concat' xss
+
+-- c.
+replicate' :: Int -> a -> [a]
+replicate' 0 _ = []
+replicate' n x = x : replicate' (n-1) x
+
+-- d.
+(<!!>) :: [a] -> Int -> a
+(<!!>) (x:xs) 0 = x
+(<!!>) (x:xs) n = (<!!>) xs (n-1)
+
+-- e.
+elem' :: Eq a => a -> [a] -> Bool
+elem' _ [] = False
+elem' a (x:xs) = 
+  if a == x
+     then True
+  else elem' a xs
