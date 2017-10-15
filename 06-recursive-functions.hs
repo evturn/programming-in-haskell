@@ -103,3 +103,19 @@ merge [] ys = ys
 merge (x:xs) (y:ys) 
   | x < y     = x : merge xs (y : ys)
   | otherwise = y : merge (x : xs) ys
+
+-- 8.
+-- Define a function using merge that implements merge sort, in which the empty
+-- list and singleton lists are already sorted, and any other list is sorted by
+-- merging together the two lists that result from sorting the two halves.
+halve :: [a] -> ([a], [a])
+halve xs = ((take n xs), (drop n xs))
+  where 
+    n = length xs `div` 2 
+    
+msort :: Ord a => [a] -> [a]
+msort []  = []
+msort [x] = [x] 
+msort xs = merge (msort first) (msort second)
+  where 
+    (first, second) = halve xs
