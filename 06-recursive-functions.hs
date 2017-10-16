@@ -119,3 +119,21 @@ msort [x] = [x]
 msort xs = merge (msort first) (msort second)
   where 
     (first, second) = halve xs
+
+-- 9.
+-- Construct the library functions that:
+-- a. calculate the sum of a list of numbers;
+sum' :: [Int] -> Int
+sum' [] = 0
+sum' (x:xs) = x + (sum' xs)
+
+-- b. take a given number of elements from the start of a list;
+take' :: Int -> [a] -> [a] 
+take' 0 _  = []
+take' _ [] = []
+take' n (x:xs) = x : take' (n-1) xs 
+  
+-- c. select the last element of a non-empty list.
+last' :: [a] -> a
+last' [x] = x
+last' (x:xs) = last' xs
