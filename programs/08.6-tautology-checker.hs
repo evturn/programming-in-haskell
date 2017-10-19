@@ -11,6 +11,10 @@ type Subst = Assoc Char Bool
 find :: Eq k => k -> Assoc k v -> v
 find k t = head [v | (k', v) <- t, k == k']
 
+rmdups :: Eq a => [a] -> [a]
+rmdups []     = []
+rmdups (x:xs) = x : filter (/= x) (rmdups xs)
+
 -- | A function that evaluates a proposition given a substitution for its variables
 -- defined by pattern matching on the five possible forms that the proposition can
 -- have.
@@ -47,6 +51,20 @@ bools n = nah bss ++ yes bss
     yes = map (True:)
     bss = bools (n-1)
 
+-- | A function that generates all possible substitutions for a proposition.
+substs :: Prop -> [Subst]
+-- | Zipping the list of variables with each of the resulting lists.
+substs p = map (zip vs) (bools (length vs))
+  where
+    -- | Extracting the variables and removing duplicates form the list.
+    vs = rmdups $ vars p
+
+-- | A function that decides if a proposition is a tautology.
+isTaut :: Prop -> Bool
+-- | Check if it evaluates to `True` for all possible substitutions.
+isTaut p = and [eval s p | s <- substs p]
+
+-- Proposition variables
 p1 :: Prop
 p1 = And (Var 'A') (Not (Var 'A'))
 
