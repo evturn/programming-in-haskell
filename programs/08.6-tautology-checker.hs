@@ -35,6 +35,18 @@ vars (Not p)     = vars p
 vars (And p q)   = vars p ++ vars q
 vars (Imply p q) = vars p ++ vars q
 
+-- | A function that produces a list of logical values of a given length.
+bools :: Int -> [[Bool]]
+bools 0 = [[]]
+-- | Append the results of taking two copies of the recursively produced lists
+bools n = nah bss ++ yes bss
+  where 
+    -- | Place `False` in front of each list in the first copy.
+    nah = map (False:)
+    -- | Place `True` in front of each list in the second copy.
+    yes = map (True:)
+    bss = bools (n-1)
+
 p1 :: Prop
 p1 = And (Var 'A') (Not (Var 'A'))
 
