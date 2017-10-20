@@ -15,3 +15,10 @@ add :: Nat -> Nat -> Nat
 add Zero n     = n
 add (Succ m) n = Succ (add m n)
 
+-- 1.
+-- Define a recursive multiplication function for the recursive type of natural
+-- numbers.
+mult :: Nat -> Nat -> Nat
+mult Zero _     = Zero
+mult _ Zero     = Zero
+mult (Succ m) n = add (Succ m) (mult m n)
