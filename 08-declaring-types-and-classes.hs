@@ -57,3 +57,18 @@ balanced :: BTree a -> Bool
 balanced (BLeaf x)   = True
 balanced (BNode l r) = 
   abs (leafLen l - leafLen r) <= 1 && balanced l && balanced r
+
+-- 4.
+-- Define a function that converts a non-empty list into a
+-- balanced tree.
+splitList :: [a] -> ([a], [a])
+splitList xs = ((take n xs), (drop n xs))
+  where
+    n = length xs `div` 2
+
+balance :: [a] -> BTree a
+balance [x] = BLeaf x
+balance xs  =
+  BNode 
+    (balance (fst (splitList xs)))
+    (balance (snd (splitList xs)))
