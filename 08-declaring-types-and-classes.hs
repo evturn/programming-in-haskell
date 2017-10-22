@@ -36,9 +36,8 @@ occurs x (Node l y r) | x == y    = True
                       | otherwise = occurs x r
 
 occurs' :: Ord a => a -> Tree a -> Bool
-occurs' x (Leaf y) = compare x y == EQ
-occurs' x (Node l y r) | compare x y == EQ = True
-                       | compare x y == LT = occurs' x l
-                       | otherwise         = occurs' x r
-
-
+occurs' x (Leaf y)     = x == y 
+occurs' x (Node l y r) = case compare x y of 
+                           LT -> occurs' x l
+                           EQ -> True
+                           GT -> occurs' x r
