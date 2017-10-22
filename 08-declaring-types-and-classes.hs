@@ -53,3 +53,7 @@ leafLen :: BTree a -> Int
 leafLen (BLeaf x)   = 1
 leafLen (BNode l r) = leafLen l + leafLen r
 
+balanced :: BTree a -> Bool
+balanced (BLeaf x)   = True
+balanced (BNode l r) = 
+  abs (leafLen l - leafLen r) <= 1 && balanced l && balanced r
