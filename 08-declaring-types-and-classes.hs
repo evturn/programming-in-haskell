@@ -41,3 +41,15 @@ occurs' x (Node l y r) = case compare x y of
                            LT -> occurs' x l
                            EQ -> True
                            GT -> occurs' x r
+ 
+-- 3.
+-- Define a function that decides if the number of leaves in
+-- the left and right subtree of every node differs by at
+-- at most one, with leaves themselves being trivially
+-- balanced.
+data BTree a = BLeaf a | BNode (BTree a) (BTree a) deriving Show 
+
+leafLen :: BTree a -> Int 
+leafLen (BLeaf x)   = 1
+leafLen (BNode l r) = leafLen l + leafLen r
+
