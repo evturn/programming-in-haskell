@@ -72,3 +72,14 @@ balance xs  =
   BNode 
     (balance (fst (splitList xs)))
     (balance (snd (splitList xs)))
+
+-- 5.
+-- Define a higher-order function such that replaces each
+-- `Val` constructor in an expression by the function `f`,
+-- and each `Add` constructor by the function `g`.
+data Expr = Val Int | Add Expr Expr deriving Show
+
+folde :: (Int -> a) -> (a -> a -> a) -> Expr -> a
+folde f g (Val x)   = f x
+folde f g (Add x y) = g (folde f g x) (folde f g y)
+
