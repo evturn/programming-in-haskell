@@ -66,3 +66,20 @@ interleave x (y:ys) = (x:y:ys) : map (y:) (interleave x ys)
 perms :: [a] -> [[a]]
 perms []     = [[]]
 perms (x:xs) = concat (map (interleave x) (perms xs))
+
+-- | This returns all choices from a list, which are given by all possible
+-- ways of selecting zero or more elemenets in any order by considering all
+-- permutations of all subsequences.
+choices :: [a] -> [[a]]
+choices = concat . map perms . subs
+
+-- | This defines what it means to solve an instance of the countdown 
+-- problem.
+--
+-- Given a list of numbers and a target, an expression is a solution if:
+-- 
+-- * The list of values in the expression is chosen from the list of numbers.
+-- * The expression successfully evaluates to give the target.
+solution :: Expr -> [Int] -> Int -> Bool
+solution e ns n =
+  elem (values e) (choices ns) && eval e == [n]
