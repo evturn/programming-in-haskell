@@ -77,20 +77,20 @@ balance xs  =
 -- Define a higher-order function such that replaces each
 -- `Val` constructor in an expression by the function `f`,
 -- and each `Add` constructor by the function `g`.
-data Expr = Val Int | Add Expr Expr deriving Show
+data Expr' = Val' Int | Add' Expr' Expr' deriving Show
 
-folde :: (Int -> a) -> (a -> a -> a) -> Expr -> a
-folde f g (Val x)   = f x
-folde f g (Add x y) = g (folde f g x) (folde f g y)
+folde :: (Int -> a) -> (a -> a -> a) -> Expr' -> a
+folde f g (Val' x)   = f x
+folde f g (Add' x y) = g (folde f g x) (folde f g y)
 
 -- 6.
 -- Using `folde` define a function `eval` that evaluates an
 -- expression to an integer value, and a function `size`
 -- that calculates the number of values in an expression.
-eval' :: Expr -> Int 
+eval' :: Expr' -> Int 
 eval' = folde (+0) (+)
 
-size :: Expr -> Int
+size :: Expr' -> Int
 size = folde (\_ -> 1) (+)
 
 -- 7.
@@ -109,7 +109,7 @@ size = folde (\_ -> 1) (+)
 
 -- 8.
 -- Extend the tautology checker to support logical 
--- disjunction and equivalence in propositions
+-- disjunction and equivalence in propositions.
 data Prop = Const Bool
           | Var Char
           | Not Prop
@@ -145,3 +145,34 @@ vars (Imply p q) = vars p ++ vars q
 -- extension for ∨ and ⇔ 
 vars (Or p q)    = vars p ++ vars q
 vars (Eqiv p q)  = vars p ++ vars q
+
+-- 9.
+-- Extend the abstract machine to support the use
+-- of multiplication.
+data Expr = 
+    Val Int 
+  | Add Expr Expr
+  | Mult Expr Expr
+
+data Op =
+    ADD Expr
+  | MULT Expr
+  | PLUS Int
+  | TIMES Int
+
+type Cont = [Op]
+
+eval'' :: Expr -> Cont -> Int
+eval'' (Val n) c    = exec c n
+eval'' (Add x y) c  = eval'' x (ADD y : c)
+eval'' (Mult x y) c = eval'' x (MULT y : c)
+
+exec :: Cont -> Int -> Int
+exec [] n            = n
+exec (ADD y : c) n   = eval'' y (PLUS n : c)
+exec (MULT y : c) n  = eval'' y (TIMES n : c)
+exec (PLUS n : c)  m = exec c (n + m)
+exec (TIMES n : c) m = exec c (n * m)
+
+value :: Expr -> Int
+value e = eval'' e []
