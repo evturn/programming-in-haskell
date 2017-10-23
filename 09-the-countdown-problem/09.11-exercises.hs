@@ -38,3 +38,14 @@ instance Show Expr where
       brak (Val n) = show n
       brak e       = "(" ++ show e ++ ")"
 
+values :: Expr -> [Int]
+values (Val n)     = [n]
+values (App _ l r) = values l ++ values r
+
+eval :: Expr -> [Int]
+eval (Val n)     = [n | n > 0]
+eval (App o l r) = [apply o x y | x <- eval l,
+                                  y <- eval r,
+                                  valid o x y]
+
+
