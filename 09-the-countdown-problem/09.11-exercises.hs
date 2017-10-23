@@ -22,3 +22,19 @@ valid Add _ _ = True
 valid Sub x y = x > y
 valid Mul _ _ = True
 valid Div x y = x `mod` y == 0
+
+apply :: Op -> Int -> Int -> Int
+apply Add x y = x + y
+apply Sub x y = x - y
+apply Mul x y = x * y
+apply Div x y = x `div` y
+
+data Expr = Val Int | App Op Expr Expr
+
+instance Show Expr where
+  show (Val n)      = show n
+  show (App o l r)  = brak l ++ show o ++ brak r
+    where
+      brak (Val n) = show n
+      brak e       = "(" ++ show e ++ ")"
+
