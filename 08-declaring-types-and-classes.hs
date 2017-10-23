@@ -87,8 +87,8 @@ folde f g (Add x y) = g (folde f g x) (folde f g y)
 -- Using `folde` define a function `eval` that evaluates an
 -- expression to an integer value, and a function `size`
 -- that calculates the number of values in an expression.
-eval :: Expr -> Int 
-eval = folde (+0) (+)
+eval' :: Expr -> Int 
+eval' = folde (+0) (+)
 
 size :: Expr -> Int
 size = folde (\_ -> 1) (+)
@@ -105,3 +105,43 @@ size = folde (\_ -> 1) (+)
 --   (==) [] []         = True
 --   (==) (x:xs) (y:ys) = x == y && xs == ys
 --   (==) _ _           = False
+--
+
+-- 8.
+-- Extend the tautology checker to support logical 
+-- disjunction and equivalence in propositions
+data Prop = Const Bool
+          | Var Char
+          | Not Prop
+          | And Prop Prop
+          | Imply Prop Prop
+          -- extension for ∨ and ⇔ 
+          | Or Prop Prop
+          | Eqiv Prop Prop
+          deriving Show
+
+type Assoc k v = [(k, v)]
+type Subst = Assoc Char Bool
+
+find :: Eq k => k -> Assoc k v -> v
+find k t = head [v | (k', v) <- t, k == k']
+
+eval :: Subst -> Prop -> Bool
+eval _ (Const b)   = b
+eval s (Var x)     = find x s
+eval s (Not p)     = not (eval s p)
+eval s (And p q)   = eval s p && eval s q
+eval s (Imply p q) = eval s p <= eval s q
+-- extension for ∨ and ⇔ 
+eval s (Or p q)    = eval s p || eval s q
+eval s (Eqiv p q)  = eval s p == eval s q
+
+vars :: Prop -> [Char]
+vars (Const _)   = []
+vars (Var x)     = [x]
+vars (Not p)     = vars p
+vars (And p q)   = vars p ++ vars q
+vars (Imply p q) = vars p ++ vars q
+-- extension for ∨ and ⇔ 
+vars (Or p q)    = vars p ++ vars q
+vars (Eqiv p q)  = vars p ++ vars q
