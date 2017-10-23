@@ -48,4 +48,21 @@ eval (App o l r) = [apply o x y | x <- eval l,
                                   y <- eval r,
                                   valid o x y]
 
+-- | This returns all subsequences of a list, which are given by all possible
+-- combinations of excluding or indcluding each element of the list.
+subs :: [a] -> [[a]]
+subs []     = [[]]
+subs (x:xs) = yss ++ map (x:) yss
+  where
+    yss = subs xs
 
+-- | This returns all possible ways of inserting a new element into a list.
+interleave :: a -> [a] -> [[a]]
+interleave x []     = [[x]]
+interleave x (y:ys) = (x:y:ys) : map (y:) (interleave x ys)
+
+-- | This returns all permutations of a list, which are given by all possible
+-- reorderings of the elements.
+perms :: [a] -> [[a]]
+perms []     = [[]]
+perms (x:xs) = concat (map (interleave x) (perms xs))
