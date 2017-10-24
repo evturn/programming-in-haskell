@@ -83,3 +83,20 @@ choices = concat . map perms . subs
 solution :: Expr -> [Int] -> Int -> Bool
 solution e ns n =
   elem (values e) (choices ns) && eval e == [n]
+
+-- | Returns all possible ways of splitting a list into two non-empty lists
+-- that append to give the original list.
+split :: [a] -> [([a], [a])]
+split []     = []
+split [_]    = []
+split (x:xs) = ([x], xs) : [(x:ls, rs) | (ls, rs) <- split xs]
+
+-- | Returns all possible expressions whose list of values is precisely a
+-- given list.
+exprs :: [Int] -> [Expr]
+exprs []  = []
+exprs [n] = [Val n]
+exprs ns = [e | (ls, rs) <- split ns,
+                l        <- exprs ls,
+                r        <- exprs rs,
+                e        <- combine l r]
