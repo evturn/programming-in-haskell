@@ -100,3 +100,9 @@ exprs ns = [e | (ls, rs) <- split ns,
                 l        <- exprs ls,
                 r        <- exprs rs,
                 e        <- combine l r]
+
+combine :: Expr -> Expr -> [Expr]
+combine l e = [App o l r | o <- ops]
+
+ops :: [Op]
+ops = [Add, Sub, Mul, Div]
