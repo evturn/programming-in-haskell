@@ -106,3 +106,7 @@ combine l e = [App o l r | o <- ops]
 
 ops :: [Op]
 ops = [Add, Sub, Mul, Div]
+
+solutions :: [Int] -> Int -> [Expr]
+solutions ns n =
+  [e | ns' <- choices ns, e <- exprs ns', eval e == [n]]
