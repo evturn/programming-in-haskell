@@ -17,6 +17,18 @@ isChoice [] _      = True
 isChoice (x:xs) [] = False
 isChoice (x:xs) ys = elem x ys && isChoice xs (removeFirst x ys)
 
+-- 3.
+-- What effect on the function `solutions` would the function `split` have 
+-- if it was modified to also return pairs of containing the empty list.
+-- 
+-- It would never terminate.
+
+-- 4.
+--  Using the functions choices, exprs, and eval, verify that there are
+--  33,665,406 possible expressions over the numbers 1, 3, 7, 10, 25, 50,
+--  and that only 4,672,540 of these expressions evaluate successfully.
+
+---------------------------------------
 -- The coundown problem
 --
 -- Given a sequence of numbers and a target number, attempt to construct an
