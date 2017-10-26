@@ -1,3 +1,11 @@
+-- 1.
+-- Redefine the combinatorial function `choices` using a list comprehension.
+choices' :: [a] -> [[a]]
+choices' xs = [ys | yss <- subs xs,
+                     ys <- perms yss]
+
+-- The coundown problem
+--
 -- Given a sequence of numbers and a target number, attempt to construct an
 -- expression whose value is the target, by combining one or more numbers from
 -- the sequence using addition, subtraction, multiplication, division and
@@ -20,7 +28,7 @@ instance Show Op where
 valid :: Op -> Int -> Int -> Bool
 valid Add x y = x <= y
 valid Sub x y = x > y
-valid Mul x y = x /= 1 && y \= 1 && x <= y
+valid Mul x y = x /= 1 && y /= 1 && x <= y
 valid Div x y = y /= 1 && x  `mod` y == 0
 
 apply :: Op -> Int -> Int -> Int
@@ -49,7 +57,7 @@ eval (App o l r) = [apply o x y | x <- eval l,
                                   valid o x y]
 
 -- | This returns all subsequences of a list, which are given by all possible
--- combinations of excluding or indcluding each element of the list.
+-- combinations of excluding or including each element of the list.
 subs :: [a] -> [[a]]
 subs []     = [[]]
 subs (x:xs) = yss ++ map (x:) yss
