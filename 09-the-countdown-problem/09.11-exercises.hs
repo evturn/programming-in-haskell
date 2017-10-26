@@ -39,6 +39,26 @@ totalPossible = length . possibleExprs
 totalSuccessful :: [Int] -> Int
 totalSuccessful = length . successfulExprs
 
+-- 5.
+-- Verify that the number of expressions that evaluate successfully increases
+-- to 10,839,369 if the numeric domain is generalized to arbitrary integers.
+--
+-- valid :: Op -> Int -> Int -> Bool
+-- valid Add _ _ = True
+-- valid Sub x y = True
+-- valid Mul _ _ = True
+-- valid Div x y = y /= 0 && x `mod` y == 0
+-- 
+-- Replacing `valid` with the definition above when running `totalSuccessful`
+-- verifies that the number of expressions that evaluate successfully
+-- increases to 10,839,369.
+
+-- 6.
+-- Modify the final program to:
+-- a. allow the use of exponentiation in expressions.
+-- b. produce the nearest solutions if no exact solution is possible.
+-- c. order the solutions using a suitable measure of simplicity.
+
 ---------------------------------------
 -- The coundown problem
 --
@@ -54,24 +74,32 @@ data Op =
   | Sub
   | Mul
   | Div
+  -- added for exercise 6a.
+  | Pow
 
 instance Show Op where
   show Add = "+"
   show Sub = "-"
   show Mul = "*"
   show Div = "/"
+  -- added for exercise 6a.
+  show Pow = "^"
 
 valid :: Op -> Int -> Int -> Bool
 valid Add x y = x <= y
 valid Sub x y = x > y
 valid Mul x y = x /= 1 && y /= 1 && x <= y
 valid Div x y = y /= 1 && x  `mod` y == 0
+  -- added for exercise 6a.
+valid Pow x y = x <- y && y >= 0
 
 apply :: Op -> Int -> Int -> Int
 apply Add x y = x + y
 apply Sub x y = x - y
 apply Mul x y = x * y
 apply Div x y = x `div` y
+  -- added for exercise 6a.
+apply Pow x y = x ^ x
 
 data Expr = Val Int | App Op Expr Expr
 
@@ -156,7 +184,7 @@ combine :: Expr -> Expr -> [Expr]
 combine l r = [App o l r | o <- ops]
 
 ops :: [Op]
-ops = [Add, Sub, Mul, Div]
+ops = [Add, Sub, Mul, Div, Pow]
 
 -- | Returns all possible expressions that solve an instance of the countdown
 -- problem by first generating all expressions over each choice from the given
