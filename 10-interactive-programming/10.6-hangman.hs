@@ -28,6 +28,9 @@ play word = do putStr "? "
                guess <- getLine
                if guess == word then
                   putStrLn "You did it."
-              else
+               else
                   do putStrLn (match word guess)
                      play word
+
+match :: String -> String -> String
+match xs ys = [if elem x ys then x else '-' | x <- xs]
