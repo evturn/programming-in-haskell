@@ -24,9 +24,20 @@ isChoice (x:xs) ys = elem x ys && isChoice xs (removeFirst x ys)
 -- It would never terminate.
 
 -- 4.
---  Using the functions choices, exprs, and eval, verify that there are
+--  Using the functions `choices`, `exprs`, and `eval`, verify that there are
 --  33,665,406 possible expressions over the numbers 1, 3, 7, 10, 25, 50,
 --  and that only 4,672,540 of these expressions evaluate successfully.
+possibleExprs :: [Int] -> [Expr]
+possibleExprs = concat . map exprs . choices
+
+successfulExprs :: [Int] -> [[Int]]
+successfulExprs = filter (not . null) . map eval . possibleExprs
+
+totalPossible :: [Int] -> Int
+totalPossible = length . possibleExprs
+
+totalSuccessful :: [Int] -> Int
+totalSuccessful = length . successfulExprs
 
 ---------------------------------------
 -- The coundown problem
