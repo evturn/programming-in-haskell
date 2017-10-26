@@ -1,3 +1,5 @@
+import System.IO
+
 hangman :: IO ()
 hangman = do
   putStrLn "Think of a word:"
@@ -14,3 +16,18 @@ sgetLine = do x <- getCh
                  do putChar '_'
                     xs <- sgetLine
                     return (x:xs)
+
+getCh :: IO Char
+getCh = do hSetEcho stdin False
+           x <- getChar
+           hSetEcho stdin True
+           return x
+
+play :: String -> IO ()
+play word = do putStr "? "
+               guess <- getLine
+               if guess == word then
+                  putStrLn "You did it."
+              else
+                  do putStrLn (match word guess)
+                     play word
