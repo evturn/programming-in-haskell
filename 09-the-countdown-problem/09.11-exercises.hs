@@ -93,6 +93,13 @@ split (x:xs) = ([x], xs) : [(x:ls, rs) | (ls, rs) <- split xs]
 
 -- | Returns all possible expressions whose list of values is precisely a
 -- given list.
+-- For an empty list of numbers there are no possible expressions.
+-- For a single number there is a single expression comprising that number.
+-- Otherwise, for a list of two or more numbers first produce all splittings
+-- of the list, then recursively calculate all possible expressions for each
+-- of these lists.
+-- Finally, combine each pair of expressions using each of the four numeric
+-- operators.
 exprs :: [Int] -> [Expr]
 exprs []  = []
 exprs [n] = [Val n]
@@ -101,12 +108,17 @@ exprs ns = [e | (ls, rs) <- split ns,
                 r        <- exprs rs,
                 e        <- combine l r]
 
+-- | Combines each pair of expressions using the four numeric operators.
 combine :: Expr -> Expr -> [Expr]
 combine l e = [App o l r | o <- ops]
 
 ops :: [Op]
 ops = [Add, Sub, Mul, Div]
 
+-- | Returns all possible expressions that solve an instance of the countdown
+-- problem by first generating all expressions over each choice from the given
+-- list of numbers, and selecting those expressions that successfully evaluate
+-- the target.
 solutions :: [Int] -> Int -> [Expr]
 solutions ns n =
   [e | ns' <- choices ns, e <- exprs ns', eval e == [n]]
