@@ -108,7 +108,6 @@ exprs ns = [e | (ls, rs) <- split ns,
                 r        <- exprs rs,
                 e        <- combine l r]
 
--- | Combines each pair of expressions using the four numeric operators.
 combine :: Expr -> Expr -> [Expr]
 combine l r = [App o l r | o <- ops]
 
@@ -125,3 +124,30 @@ solutions ns n =
   
 main :: IO ()
 main = print (solutions [1,3,7,10,25,50] 765)
+
+type Result = (Expr, Int)
+
+-- | Returns all possible results comprising expressions whose list of values
+-- is precisely a given list.
+--
+-- For the empty list there are no possible results.
+-- For a single number there is a single result formed from that number.
+-- Otherwise, for two or more numbers we first produce all splittings of the
+-- list, then recursively calculate all possible results for each of these
+-- lists
+-- Finally, combine each of the four numeric operators that are valid.
+results :: [Int] -> [Result]
+results []  = []
+results [n] = [(Val n, n) | n > 0]
+results ns  = [res | (ls, rs) <- split ns,
+                      lx      <- results ls,
+                      ry      <- results rs,
+                      res     <- combine' lx ry]
+
+combine' :: Result -> Result -> [Result]
+combine' (l,x) (r,y) =
+  [(App o l r, apply o x y) | o <- ops, valid o x y]
+
+solutions' :: [Int] -> Int -> [Expr]
+solutions' ns n =
+  [e | ns' <- choices ns, (e, m) <- results ns', m == n]
