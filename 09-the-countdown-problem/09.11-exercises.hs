@@ -110,7 +110,7 @@ exprs ns = [e | (ls, rs) <- split ns,
 
 -- | Combines each pair of expressions using the four numeric operators.
 combine :: Expr -> Expr -> [Expr]
-combine l e = [App o l r | o <- ops]
+combine l r = [App o l r | o <- ops]
 
 ops :: [Op]
 ops = [Add, Sub, Mul, Div]
@@ -122,3 +122,6 @@ ops = [Add, Sub, Mul, Div]
 solutions :: [Int] -> Int -> [Expr]
 solutions ns n =
   [e | ns' <- choices ns, e <- exprs ns', eval e == [n]]
+  
+main :: IO ()
+main = print (solutions [1,3,7,10,25,50] 765)
