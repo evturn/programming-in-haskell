@@ -4,6 +4,19 @@ choices' :: [a] -> [[a]]
 choices' xs = [ys | yss <- subs xs,
                      ys <- perms yss]
 
+-- 2.
+-- Define a recursive function that decides if one list is chosen from another
+-- without using the combinatorial functions `perms` and `subs`.
+removeFirst :: Eq a => a -> [a] -> [a]
+removeFirst x []                 = []
+removeFirst x (y:ys) | x == y    = ys
+                     | otherwise = y : removeFirst x ys
+
+isChoice :: Eq a => [a] -> [a] -> Bool
+isChoice [] _      = True
+isChoice (x:xs) [] = False
+isChoice (x:xs) ys = elem x ys && isChoice xs (removeFirst x ys)
+
 -- The coundown problem
 --
 -- Given a sequence of numbers and a target number, attempt to construct an
