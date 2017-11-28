@@ -9,17 +9,23 @@ instance Functor Tree where
 
 -----------------------------------------------------------------------------
 -- 2.
---
--- |
--- Avoid conflict with library definition for `((->) r)`
-newtype R r a = R
-              { run :: r -> a }
+instance Functor ((->) a) where
+  fmap = (.)
 
-instance Functor (R r) where
-  fmap f  (R r) = R $ f . r
+-----------------------------------------------------------------------------
+-- 3.
+instance Applicative ((->) a) where
+  pure x = \_ -> x
+  f <*> g = \x -> f x $ g x
 
-applyR :: (Int -> Int) -> R Int Int -> Int -> Int
-applyR f r x = run (fmap f r) x
+-----------------------------------------------------------------------------
+-- 4.
+newtype ZipList a = Z [a]
+  deriving Show
 
-runR :: Int
-runR = applyR (+100) (R $ (+2)) 3
+instance Functor ZipList where
+  fmap f (Z xs) = Z (fmap f xs)
+
+instance Applicative ZipList where
+  pure x = Z $ repeat x
+  Z fs <*> Z xs = Z [f x | (f, x) <- zip fs xs]
