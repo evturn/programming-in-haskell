@@ -68,4 +68,24 @@ instance Monad Expr where
 
 -----------------------------------------------------------------------------
 -- 8.
+type State = Int
 
+newtype ST a = S (State -> (a, State))
+
+instance Functor ST where
+  fmap f st = do
+    x <- st
+    S $ \s -> (f x, s)
+
+instance Applicative ST where
+  pure x = S $ \s -> (x, s)
+  stf <*> stx = do
+    f <- stf
+    x <- stx
+    return $ f x
+
+instance Monad ST where
+  S st >>= f = S $ \s ->
+    let (x, s') = st s
+        (S st') = f x
+     in st' s'
