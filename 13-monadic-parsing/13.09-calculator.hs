@@ -23,32 +23,31 @@ buttons = standard ++ extra
     standard = "qcd=123+456-789*0()/"
     extra    = "QCD \ESC\BS\DEL\n"
 
-type Pos = (Int, Int)
-
 cls :: IO ()
 cls = putStr "\ESC[2J"
 
-writeat :: Pos -> String -> IO ()
+writeat :: (Int, Int) -> String -> IO ()
 writeat p xs = do
   goto p
   putStr xs
 
-goto :: Pos -> IO ()
+goto :: (Int, Int) -> IO ()
 goto (x, y) = putStr ("\ESC[" ++ show y ++ ";" ++ show x ++ "H")
 
 getCh :: IO Char
-getCh = do hSetEcho stdin False
-           x <- getChar
-           hSetEcho stdin True
-           return x
+getCh = do
+  hSetEcho stdin False
+  x <- getChar
+  hSetEcho stdin True
+  return x
 
 showbox :: IO ()
-showbox = sequence_ [writeat (1, y) b | (y, b) <- zip [1..] box]
+showbox = sequence_ [writeat (1,y) b | (y,b) <- zip [1..] box]
 
 display :: [Char] -> IO ()
 display xs = do
-  writeat (3, 2) (replicate 13 ' ')
-  writeat (3, 2) (reverse (take 13 (reverse xs)))
+  writeat (3,2) (replicate 13 ' ')
+  writeat (3,2) (reverse (take 13 (reverse xs)))
 
 calc :: String -> IO ()
 calc xs = do
@@ -56,16 +55,15 @@ calc xs = do
   c <- getCh
   if elem c buttons
   then process c xs
-  else do
-    beep
-    calc xs
+  else do beep
+          calc xs
 
 process :: Char -> String -> IO ()
-process c xs
-    | elem c "qQ\ESC" = quit
-    | elem c "= \n"   = eval xs
-    | elem c "cC"     = clear
-    | otherwise       = press c xs
+process c xs | elem c "qQ\ESC"    = quit
+             | elem c "dD\BS\DEL" = delete xs
+             | elem c "=\n"       = eval xs
+             | elem c "cC"        = clear
+             | otherwise          = press c xs
 
 quit :: IO ()
 quit = goto (1, 14)
@@ -77,9 +75,8 @@ delete xs = calc (init xs)
 eval :: String -> IO ()
 eval xs = case parse expr xs of
   [(n, [])] -> calc (show n)
-  _         -> do
-    beep
-    calc xs
+  _         -> do beep
+                  calc xs
 
 beep :: IO ()
 beep = putStr "\BEL"
@@ -109,25 +106,31 @@ newtype Parser a = P (String -> [(a, String)])
 expr :: Parser Int
 expr = do
   t <- term
-  do
-    symbol "+"
-    e <- expr
-    return (t + e) <|> return t
+  do symbol "+"
+     e <- expr
+     return (t + e)
+   <|> do symbol "-"
+          e <- expr
+          return (t - e)
+   <|> return t
 
 term :: Parser Int
 term = do
   f <- factor
-  do
-    symbol "*"
-    t <- term
-    return (f * t) <|> return f
+  do symbol "*"
+     t <- term
+     return (f * t)
+   <|> do symbol "/"
+          t <- term
+          return (f `div` t)
+   <|> return f
 
 factor :: Parser Int
-factor = do
-  symbol "("
-  e <- expr
-  symbol ")"
-  return e <|> natural
+factor = do symbol "("
+            e <- expr
+            symbol ")"
+            return e
+          <|> nat
 
 parse :: Parser a -> String -> [(a, String)]
 parse (P p) inp = p inp
@@ -187,10 +190,10 @@ space = do
   return ()
 
 int :: Parser Int
-int = do
-  char '-'
-  n <- nat
-  return (-n) <|> nat
+int = do char '-'
+         n <- nat
+         return (-n)
+       <|> nat
 
 token :: Parser a -> Parser a
 token p = do
