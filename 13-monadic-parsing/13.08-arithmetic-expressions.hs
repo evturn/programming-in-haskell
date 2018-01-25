@@ -3,6 +3,42 @@ import           Data.Char
 
 newtype Parser a = P (String -> [(a, String)])
 
+-----------------------------------------------------------------------------
+-- expr   ::=  term (+ expr | ∊)
+-- term   ::=  factor (* term | ∊)
+-- factor ::=  ( expr ) | nat
+-- nat    ::=  0 | 1 | 2 | ...
+-----------------------------------------------------------------------------
+
+expr :: Parser Int
+expr = do
+  t <- term
+  do
+    symbol "+"
+    e <- expr
+    return (t + e) <|> return t
+
+term :: Parser Int
+term = do
+  f <- factor
+  do
+    symbol "*"
+    t <- term
+    return (f * t) <|> return f
+
+factor :: Parser Int
+factor = do
+  symbol "("
+  e <- expr
+  symbol ")"
+  return e <|> natural
+
+eval :: String -> Int
+eval xs = case (parse expr xs) of
+  [(n, [])]  -> n
+  [(_, out)] -> error ("Unused input " ++ out)
+  []         -> error "Invalid input"
+
 parse :: Parser a -> String -> [(a, String)]
 parse (P p) inp = p inp
 
@@ -66,8 +102,6 @@ int = do
   n <- nat
   return (-n) <|> nat
 
--- | The `token` function defines a new primitive that ignores any space before
--- and after applying a parser for a token.
 token :: Parser a -> Parser a
 token p = do
   space
@@ -87,8 +121,6 @@ integer = token int
 symbol :: String -> Parser String
 symbol xs = token (string xs)
 
--- | The `nats` parser is defined for a non-empty list of natural numbers that
--- ignores spacing around tokens.
 nats :: Parser [Int]
 nats = do
   symbol "["
