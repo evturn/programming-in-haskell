@@ -33,7 +33,7 @@ perfects n = [x | x <- [1..n], sum (factors x) - x == x]
 -- Show how the list comprehension [(x, y) | x <- [1, 2], y <- [3, 4]] with two generators can be
 -- expressed using two comprehensions with a single generator
 
-nestedComprehension xs ys = concat [[(x, y) | x <- xs] | y <- ys]
+nestedComprehension xs ys = concat [[(x, y) | y <- ys] | x <- xs]
 
 -- 8.
 -- Redefine the function `positions` using the function `find`
